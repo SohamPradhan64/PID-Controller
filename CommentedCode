@@ -1,3 +1,5 @@
+// Updated the CommentedCode - 9/25/24
+
 #pragma region VEXcode Generated Robot Configuration
 // Make sure all required headers are included.
 #include <stdio.h>
@@ -77,72 +79,75 @@ int turnError; //value - desiredvalue or position
 int turnPrevError = 0;
 int turnDerivative; //error - preverror or speed
 int turnTotalError = 0;
-// Turning Error tuning, ill find the desired position and given that will calculate the turn error made. 
+// Turning Error tuning, it will find the desired position and given that will calculate the turn error made. 
 // On top of that, it will also find the prevError of the turn error and the speed so that it can be fixed.
 bool resetDriveSensors = false;
+// Sets the Drive Sensors to false since the function has not been used yet.
 
 bool enablePID = true;
-
+// Turns on Proportial-Integral-Derivative Control
 int drivePID(){
   while(enablePID){
-
+    
     if (resetDriveSensors) {
       resetDriveSensors = false;
       leftMotor.setPosition(0,degrees);
       rightMotor.setPosition(0,degrees);
     }
-
+  // While the PID is enabled, resetDriveSensors is set to false and the motors are rese to the designated position, in this case, "o, degrees".
 
     int leftMotorPosition = leftMotor.position(degrees);
-    int righMotorPosition = leftMotor.position(degrees);
+    int rightMotorPosition = rightMotor.position(degrees);
     int averagePosition = (leftMotorPosition + rightMotorPosition)/2;
-
+    // sets the left and right motor position to their respective degrees, then it will find the average position by adding up both the positions and dividing them by two. 
     error = averagePosition - desiredValue; //potential
     derivative = error - prevError; //derivative
-
+  // finds the potential for error and the derivative
     totalError += error; //integral or opposite of derivative > converts position to absement 
 
     double lateralMotorPower = (error*kP + derivative*kD + totalError*kI);
-
-    //turn values
+  // sets the movement motor power equal to the position * error + the current derivative * to the derivative + the total error * to the integral.
+    //TURN VALUES
     int turnDifference = leftMotorPosition - rightMotorPosition
-    
+    // sets the turn difference to the value brought from the positions of the left motor subtracted from the right motor.
 
-    turnError = turnAveragePosition - turnDesiredValue; //potential
-    turnDerivative = turnError - turnPrevError; //derivative
+    turnError = turnAveragePosition - turnDesiredValue; // sets the potential turn error
+    turnDerivative = turnError - turnPrevError; //sets the turn derivative
 
     turnTotalError += turnError; //integral or opposite of derivative > converts position to absement 
 
     double turnMotorPower = (turnError*TkP + turnDerivative*TkD + turnTotalError*TkI);
-
+    // the turn motor power is set to the potential turn error * turn position, + the current turn derivative * turn derivative + the total turn error * turn integral.
     
 
     leftMotor.spin(forward, lateralMotorPower + turnVoluts, voltageUnits::volt);
     leftMotor.spin(forward, lateralMotorPower - turnVoluts, voltageUnits::volt);
-    
+    // left motors spin forward, for a set number of volts +-= the lateral motor power(forward, backward).
     prevError = error;
     vex::task::sleep(20);
-
+    // previous error is set back to the error at the start, error restarted.
+    // vex is set to go to sleep.
   }
   return 1;
+  // (NO IDEA WHAT THIS IS FOR)
 }
 // autonomous code
-void autonomouse(void) {
+void autonomous(void) {
   vex::task hello(drivePID);
-
+// wakes up the driver PID (most likely)
   resetDriveSensors = true;
   desiredValue = 300;
   desiredTurnValue = 600;
   vex::task::sleep(1000)
-
+// resets the drive sensors, makes the desired value 300, sets the desired turn value to 600, and sleeps.
   resetDriveSensors = true;
   desiredValue = 300;
   desiredTurnValue = 300;
-  
+  // resets the drive sensors, sets the desired value to 300 again since the hub slept, but it sets the turn value to 300 this time.
 
 }
 // user control code
 void usercontrol(void) {
   enablePID = false;
-
+// turns off PID control so that the player can manually control the robot.
 }
