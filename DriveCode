@@ -1,0 +1,86 @@
+// User defined function
+void myblockfunction_rampBack_cm(double myblockfunction_rampBack_cm__cm);
+// User defined function
+void myblockfunction_drive_forward_cm(double myblockfunction_drive_forward_cm__cm);
+// User defined function
+void myblockfunction_RampForward_cm(double myblockfunction_RampForward_cm__cm);
+// User defined function
+void myblockfunction_drive_backward_cm(double myblockfunction_drive_backward_cm__cm);
+// User defined function
+void myblockfunction_turn_right_deg_vel(double myblockfunction_turn_right_deg_vel__deg, double myblockfunction_turn_right_deg_vel__vel);
+
+float myVariable;
+
+// User defined function
+void myblockfunction_rampBack_cm(double myblockfunction_rampBack_cm__cm) {
+  Ramp.spinFor(reverse, (myblockfunction_rampBack_cm__cm / 0.08866), degrees, true);
+}
+
+// User defined function
+void myblockfunction_drive_forward_cm(double myblockfunction_drive_forward_cm__cm) {
+  Wheels_1.spinFor(forward, (myblockfunction_drive_forward_cm__cm / 0.08866), degrees, true);
+  Wheels_2.spinFor(forward, (myblockfunction_drive_forward_cm__cm / 0.08866), degrees, true);
+  Wheels_3.spinFor(forward, (myblockfunction_drive_forward_cm__cm / 0.08866), degrees, true);
+}
+
+// User defined function
+void myblockfunction_RampForward_cm(double myblockfunction_RampForward_cm__cm) {
+  Ramp.spinFor(forward, (myblockfunction_RampForward_cm__cm / 0.08866), degrees, true);
+}
+
+// User defined function
+void myblockfunction_drive_backward_cm(double myblockfunction_drive_backward_cm__cm) {
+  Wheels_1.spinFor(reverse, (myblockfunction_drive_backward_cm__cm / 0.08866), degrees, true);
+  Wheels_2.spinFor(reverse, (myblockfunction_drive_forward_cm__cm / 0.08866), degrees, true);
+  Wheels_3.spinFor(reverse, (myblockfunction_drive_backward_cm__cm / 0.08866), degrees, true);
+}
+
+// User defined function
+void myblockfunction_turn_right_deg_vel(double myblockfunction_turn_right_deg_vel__deg, double myblockfunction_turn_right_deg_vel__vel) {
+  Inertial8.setRotation(0.0, degrees);
+  Wheels_1.setVelocity(myblockfunction_turn_right_deg_vel__vel, percent);
+  Wheels_2.setVelocity(myblockfunction_turn_right_deg_vel__vel, percent);
+  Wheels_3.setVelocity(myblockfunction_turn_right_deg_vel__vel, percent);
+  while ((!(Inertial8.rotation(degrees) == myblockfunction_turn_right_deg_vel__deg))) {
+    Wheels_1.spin(forward);
+    Wheels_2.spin(forward);
+    Wheels_3.spin(forward);
+  wait(5, msec);
+  }
+}
+
+// "when started" hat block
+int whenStarted1() {
+  while (true) {
+    myblockfunction_drive_forward_cm(30.0);
+  wait(5, msec);
+  }
+  while (true) {
+    myblockfunction_drive_backward_cm(30.0);
+  wait(5, msec);
+  }
+  while (true) {
+    myblockfunction_rampBack_cm(10.0);
+  wait(5, msec);
+  }
+  while (true) {
+    myblockfunction_RampForward_cm(10.0);
+  wait(5, msec);
+  }
+  while (true) {
+    myblockfunction_turn_right_deg_vel(1.0, 1.0);
+  wait(5, msec);
+  }
+  while (true) {
+  wait(5, msec);
+  }
+  return 0;
+}
+
+
+int main() {
+  // Initializing Robot Configuration. DO NOT REMOVE!
+  vexcodeInit();
+
+  whenStarted1();
+}
