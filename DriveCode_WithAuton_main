@@ -1,0 +1,109 @@
+/*----------------------------------------------------------------------------*/
+/*                                                                            */
+/*    Module:       main.cpp                                                  */
+/*    Author:       C:\Users\tavishi                                          */
+/*    Created:      Sat Nov 02 2024                                           */
+/*    Description:  V5 project                                                */
+/*                                                                            */
+/*----------------------------------------------------------------------------*/
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// Drivetrain           drivetrain    1, 2, 3, 4      
+// Intake               motor         8               
+// Controller1          controller                    
+// Ramp                 motor         9               
+// Ramp1                digital_out   B               
+// Ramp2                digital_out   C               
+// MogoMech             digital_out   A               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
+#include "vex.h"
+
+using namespace vex;
+
+motor Ramp = motor(PORT8, ratio18_1, false);
+digital_out MogoMech = digital_out(Brain.ThreeWirePort.A);
+motor leftMotorA = motor(PORT1, ratio6_1, false);
+motor leftMotorB = motor(PORT2, ratio6_1, false);
+motor leftMotorC = motor(PORT3, ratio6_1, false);
+motor_group LeftDriveSmart = motor_group(leftMotorA, leftMotorB, leftMotorC);
+motor rightMotorA = motor(PORT6, ratio6_1, true);
+motor rightMotorB = motor(PORT7, ratio6_1, true);
+motor rightMotorC = motor(PORT8, ratio6_1, true);
+motor_group RightDriveSmart = motor_group(rightMotorA, rightMotorB, rightMotorC);
+drivetrain Drivetrain = drivetrain(LeftDriveSmart, RightDriveSmart, 319.19, 295, 40, mm, 1);
+motor Intake = motor(PORT9, ratio18_1, false);
+digital_out Ramp1 = digital_out(Brain.ThreeWirePort.B);
+digital_out Ramp2 = digital_out(Brain.ThreeWirePort.C);
+controller Controller1 = controller(primary);
+//global variables
+bool pneumaticActive = false;
+
+//toggle piston on or off
+void togglePneumatic() {
+  pneumaticActive = !pneumaticActive;
+
+  if (pneumaticActive) {
+    MogoMech.set(true);
+  }
+  else {
+    MogoMech.set(false);
+  }
+}
+
+void toggleRamp1() {
+  pneumaticActive = !pneumaticActive;
+
+  if (pneumaticActive) {
+    Ramp1.set(true);
+  }
+  else {
+    Ramp1.set(false);
+  }
+}
+
+void toggleRamp2() {
+  pneumaticActive = !pneumaticActive;
+
+  if (pneumaticActive) {
+    Ramp2.set(true);
+  }
+  else {
+    Ramp2.set(false);
+  }
+}
+
+int main() {
+  // Initializing Robot Configuration. DO NOT REMOVE!
+  vexcodeInit();
+  Controller1.ButtonR1.pressed(togglePneumatic);
+  Controller1.ButtonL1.pressed(toggleRamp1);
+  Controller1.ButtonL2.pressed(toggleRamp2);
+  
+}
+
+void pre_auton(void) {
+  vexcodeInit();
+}
+
+// forward for a while, clamp, then backwards a little less, turn right 90 degrees,  intake motor, ramp motor, move forward for a while
+
+void autonomous(void) {
+  LeftDriveSmart.spin(forward, 100, pct);
+  RightDriveSmart.spin(forward, 100, pct);
+  wait(1, sec);
+  togglePneumatic();
+  wait(1, sec);
+  LeftDriveSmart.spin(reverse, 50, pct);
+  RightDriveSmart.spin(reverse, 50, pct);
+  wait(1, sec);
+  Drivetrain.turnFor(right, 90, degrees);
+  wait(1, sec);
+  Intake.spin(forward, 100, pct);
+  Ramp.spin(reverse, 50, pct);
+  wait(1, sec);
+  LeftDriveSmart.spin(forward, 80, pct);
+  RightDriveSmart.spin(forward, 80, pct);
+}
