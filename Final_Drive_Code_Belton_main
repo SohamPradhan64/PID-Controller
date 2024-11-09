@@ -10,8 +10,6 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
-//Work on on and off switch, odometry, group function the intake and ramp
-
 #include "vex.h"
 
 using namespace vex;
@@ -168,6 +166,20 @@ void usercontrol(void) {
     else {
       Ramp.stop(brakeType::brake);   // Stop the intake motor when no button is pressed
       }
+
+
+    //if(Controller1.ButtonUp.pressing()) {
+      //Ramp.spin(forward, 100, pct);  // Spin intake motor forward at full speed
+      //Intake.spin(reverse, 100, pct);
+      //}   
+    //else if(Controller1.ButtonDown.pressing()) {
+      //Ramp.spin(reverse, 100, pct);  // Spin intake motor in reverse at full speed
+      //Intake.spin(forward, 100, pct);
+      //}
+    //else {
+      //Ramp.stop(brakeType::brake);   // Stop the intake motor when no button is pressed
+      //Intake.stop(brakeType::brake);
+      //}
   
 
 
