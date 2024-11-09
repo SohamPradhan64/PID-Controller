@@ -10,6 +10,8 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
+//Work on on and off switch, odometry, group function the intake and ramp
+
 #include "vex.h"
 
 using namespace vex;
