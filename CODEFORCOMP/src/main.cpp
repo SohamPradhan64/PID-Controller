@@ -23,6 +23,8 @@
 using namespace vex;
 
 bool MogoMechActive = false;
+bool motorsRunning = false;
+
 competition Competition;
 
 void pre_auton(void) {
@@ -38,6 +40,23 @@ void usercontrol(void) {
       MogoMechActive = !MogoMechActive;
       MogoMech.set(MogoMechActive);
       }
+  if (Controller1.ButtonB.pressing()) {
+      while (Controller1.ButtonB.pressing()) {
+        wait(10, msec);  // Debouncing
+      }
+      // Toggle the state of both motors
+      motorsRunning = !motorsRunning;
+      
+      if (motorsRunning) {
+        // Run both motors forward
+        Intake.spin(forward);
+        Ramp.spin(forward);
+      } else {
+        // Stop both motors
+        Intake.stop();
+        Ramp.stop();
+      }
+    }
 }
 
 int main() {
